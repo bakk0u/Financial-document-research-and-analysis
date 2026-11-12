@@ -1,0 +1,8 @@
+.git
+.venv
+runtime
+__pycache__
+.pytest_cache
+.env
+.env.*
+.openai

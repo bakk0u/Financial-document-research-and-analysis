@@ -1,0 +1,1 @@
+{"name":"financial_research-local-preview","private":true,"scripts":{"dev":"python scripts/serve.py"}}

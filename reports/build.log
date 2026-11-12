@@ -1,0 +1,17 @@
+Indexing 8778 chunks from 299 pages
+validation page bm25 0.81228
+validation page vector 0.67896
+validation page hybrid 0.76655
+validation page reranked 0.85695
+validation collection bm25 0.51829
+validation collection vector 0.20393
+validation collection hybrid 0.3374
+validation collection reranked 0.5376
+test page bm25 0.85751
+test page vector 0.68313
+test page hybrid 0.79887
+test page reranked 0.8251
+test collection bm25 0.64969
+test collection vector 0.21759
+test collection hybrid 0.39249
+test collection reranked 0.62551

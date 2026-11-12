@@ -1,0 +1,13 @@
+{
+  "cases": 15,
+  "screening_cases": 13,
+  "screening_passed": 10,
+  "citation_forgeries_rejected": 2,
+  "provider_mode": "Not exercised: no paid model calls. Provider behavior only covered by mocked contract tests.",
+  "limitations": [
+    "A small hand-authored suite, not evidence of comprehensive security.",
+    "Regex policy screening has paraphrase and encoding bypasses.",
+    "Extractive mode cannot execute tools; this reduces impact but does not establish privacy guarantees.",
+    "No PII detector, tenant isolation, or production authentication is claimed."
+  ]
+}

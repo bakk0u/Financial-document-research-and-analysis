@@ -1,0 +1,165 @@
+{
+  "design": "Post-hoc exploratory feature ablation on validation only; no test-set results used to choose variants.",
+  "trained_query_count": 475,
+  "train_pairs": 8888,
+  "validation_questions": 246,
+  "results": [
+    {
+      "variant": "all_seven_features",
+      "excluded_features": [],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.5376,
+      "mrr_at_5": 0.54356,
+      "all_evidence_at_5": 0.42276
+    },
+    {
+      "variant": "all_seven_features",
+      "excluded_features": [],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.85695,
+      "mrr_at_5": 0.84221,
+      "all_evidence_at_5": 0.7439
+    },
+    {
+      "variant": "without_lsa_cosine",
+      "excluded_features": [
+        "lsa_cosine"
+      ],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.52371,
+      "mrr_at_5": 0.52724,
+      "all_evidence_at_5": 0.41463
+    },
+    {
+      "variant": "without_lsa_cosine",
+      "excluded_features": [
+        "lsa_cosine"
+      ],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.86169,
+      "mrr_at_5": 0.83957,
+      "all_evidence_at_5": 0.7561
+    },
+    {
+      "variant": "without_exact_number_coverage",
+      "excluded_features": [
+        "exact_number_coverage"
+      ],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.52473,
+      "mrr_at_5": 0.53801,
+      "all_evidence_at_5": 0.41463
+    },
+    {
+      "variant": "without_exact_number_coverage",
+      "excluded_features": [
+        "exact_number_coverage"
+      ],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.86034,
+      "mrr_at_5": 0.85068,
+      "all_evidence_at_5": 0.74797
+    },
+    {
+      "variant": "without_table_indicator",
+      "excluded_features": [
+        "table_indicator"
+      ],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.47967,
+      "mrr_at_5": 0.41253,
+      "all_evidence_at_5": 0.36585
+    },
+    {
+      "variant": "without_table_indicator",
+      "excluded_features": [
+        "table_indicator"
+      ],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.8253,
+      "mrr_at_5": 0.74051,
+      "all_evidence_at_5": 0.69919
+    },
+    {
+      "variant": "without_bigram_coverage",
+      "excluded_features": [
+        "query_bigram_coverage"
+      ],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.47934,
+      "mrr_at_5": 0.49641,
+      "all_evidence_at_5": 0.35772
+    },
+    {
+      "variant": "without_bigram_coverage",
+      "excluded_features": [
+        "query_bigram_coverage"
+      ],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.87219,
+      "mrr_at_5": 0.83374,
+      "all_evidence_at_5": 0.77236
+    },
+    {
+      "variant": "without_lexical_query_coverage",
+      "excluded_features": [
+        "query_coverage",
+        "query_density",
+        "query_bigram_coverage"
+      ],
+      "scope": "collection",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.43157,
+      "mrr_at_5": 0.42283,
+      "all_evidence_at_5": 0.34553
+    },
+    {
+      "variant": "without_lexical_query_coverage",
+      "excluded_features": [
+        "query_coverage",
+        "query_density",
+        "query_bigram_coverage"
+      ],
+      "scope": "page",
+      "split": "validation",
+      "queries": 246,
+      "train_pairs": 8888,
+      "recall_at_5": 0.85458,
+      "mrr_at_5": 0.82073,
+      "all_evidence_at_5": 0.74797
+    }
+  ],
+  "caution": "The test set was inspected before this audit. Do not select a new final model from these results and reuse the old test set as fresh confirmation."
+}

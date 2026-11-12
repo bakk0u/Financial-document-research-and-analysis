@@ -1,0 +1,28 @@
+{
+  "type": "logistic_pointwise_relevance_classifier",
+  "feature_names": [
+    "bm25_saturation",
+    "lsa_cosine",
+    "query_coverage",
+    "exact_number_coverage",
+    "table_indicator",
+    "query_bigram_coverage",
+    "query_density"
+  ],
+  "coef": [
+    -0.01985755863029496,
+    -0.9212416011993032,
+    3.1037307966533754,
+    0.09086926204866894,
+    1.8607062680348667,
+    3.3890448288836708,
+    1.0844891418542026
+  ],
+  "intercept": -2.0388063880918734,
+  "training_examples": 8888,
+  "positive_examples": 821,
+  "training_queries": 475,
+  "training_id_sha256": "4e27a90d4575da6748f9717fc58413d358b25b4ff84041318517f821858afb57",
+  "corpus_fingerprint": "dabe13aaebef6c6643f3a4b86c56933ff49efcde4412a5998b1de3973067c5c4",
+  "note": "A supervised feature-based reranker, not a fine-tuned LLM or neural cross-encoder. Fit on train labels only."
+}

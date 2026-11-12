@@ -1,0 +1,9 @@
+........................................................................ [ 98%]
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_arithmetic.py::test_new_endpoints_and_remote_citation_boundary
+  /opt/pyvenv/lib/python3.13/site-packages/sklearn/decomposition/_truncated_svd.py:273: RuntimeWarning: invalid value encountered in divide
+    self.explained_variance_ratio_ = exp_var / full_var
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+73 passed, 1 deselected, 1 warning in 5.56s

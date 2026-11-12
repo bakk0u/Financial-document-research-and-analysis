@@ -1,0 +1,8 @@
+{
+  "dataset": "FinQA",
+  "upstream_url": "https://github.com/czyssrs/FinQA",
+  "source_url": "https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/dev.json",
+  "upstream_blob_sha": "970f239f591c782b17df420c0d343b780737f3da",
+  "snapshot_sha256": "86fce43d383908a916f9c3358cb6bf7def4ae1e6a925912e1340067a6c96830f",
+  "note": "Original dev split is repartitioned by report into local train/validation/test. Results are not official FinQA leaderboard scores."
+}

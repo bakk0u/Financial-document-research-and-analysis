@@ -1,0 +1,84 @@
+name: Tests, reproducibility, and container smoke
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  python:
+    name: Python 3.12 / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install pinned environment
+        run: python -m pip install -r requirements.lock.txt
+      - name: Source snapshot integrity
+        run: python scripts/verify_manifest.py
+      - name: Full source/API/model test suite
+        run: python -m pytest -q
+      - name: Known-case adversarial regression suite
+        run: python scripts/redteam.py
+      - name: Frozen prediction statistics
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/evaluate_uncertainty.py
+      - name: FinQA numerical oracle diagnostic
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/evaluate_arithmetic.py
+      - name: Validation-only reranker feature ablations
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/ablate_reranker.py
+      - name: Detect benchmark output drift
+        if: matrix.os == 'ubuntu-latest'
+        run: git diff --exit-code -- reports/UNCERTAINTY.md reports/uncertainty.json reports/ARITHMETIC.md reports/arithmetic-evaluation.json reports/REDTEAM.md reports/redteam.json reports/ABLATION.md reports/ablation.json
+  docker:
+    name: Docker local-only smoke / Linux
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: python
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build container
+        run: docker build -t financial-research-ci .
+      - name: Start bound only to host loopback
+        run: docker run -d --name financial-research-test -p 127.0.0.1:8765:8765 financial-research-ci
+      - name: Health and evidence query smoke
+        shell: bash
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:8765/api/status -o /tmp/status.json; then break; fi
+            sleep 3
+          done
+          python - <<'PY'
+          import json
+          with open('/tmp/status.json') as f: s=json.load(f)
+          assert s['chunks']==8778, s
+          assert s['model_trained']
+          PY
+          curl -fsS -H 'Content-Type: application/json' \
+            -d '{"question":"How did operating income change?","method":"bm25","k":5}' \
+            http://127.0.0.1:8765/api/ask -o /tmp/query.json
+          python - <<'PY'
+          import json
+          with open('/tmp/query.json') as f: r=json.load(f)
+          assert r['evidence'], r
+          assert r['status'] in ('evidence','abstained'), r
+          PY
+      - name: Container logs
+        if: always()
+        run: docker logs financial-research-test || true
+      - name: Stop container
+        if: always()
+        run: docker rm -f financial-research-test || true

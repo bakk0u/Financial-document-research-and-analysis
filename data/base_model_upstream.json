@@ -1,0 +1,18 @@
+{
+  "repo": "distilbert/distilbert-base-uncased",
+  "revision": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+  "files": [
+    ".gitattributes",
+    "LICENSE",
+    "README.md",
+    "config.json",
+    "flax_model.msgpack",
+    "model.safetensors",
+    "pytorch_model.bin",
+    "rust_model.ot",
+    "tf_model.h5",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "vocab.txt"
+  ]
+}

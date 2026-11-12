@@ -1,0 +1,15 @@
+{
+  "repo": "takala/financial_phrasebank",
+  "revision": "8d3fe0c36d5feec6b3cc5e455b0fcb4820fb9964",
+  "files": [
+    ".gitattributes",
+    "README.md",
+    "data/FinancialPhraseBank-v1.0.zip",
+    "financial_phrasebank.py"
+  ],
+  "zip_sha256": "0e1a06c4900fdae46091d031068601e3773ba067c7cecb5b0da1dcba5ce989a6",
+  "subset": "Sentences_AllAgree.txt",
+  "license": "CC-BY-NC-SA-3.0",
+  "source_url": "https://huggingface.co/datasets/takala/financial_phrasebank/resolve/8d3fe0c36d5feec6b3cc5e455b0fcb4820fb9964/data/FinancialPhraseBank-v1.0.zip",
+  "text_sha256": "5fb370b3005b9a2759f708849a691ad2e4d2593d4c995c1afde229398a516594"
+}
