@@ -1,8 +1,25 @@
 # Financial Document Research & Analysis
 
-**An evidence-first financial NLP and retrieval research system.** A local FastAPI application for financial-report exploration, source-linked passages, independently measured retrieval and sentiment classification, deterministic financial arithmetic, and a reproducible error audit.
+Search financial reports, inspect the source passages and analyse sentiment in a local Python application.
 
-This is a technically inspectable **research portfolio**, not a production banking service. Development included AI coding assistance. Authorship should be demonstrated by reproducing experiments, reviewing failure cases, and explaining the engineering decisions rather than presenting the source as a long-running team project.
+The project brings together document retrieval, a fine-tuned sentiment classifier and a FastAPI interface. Each search result links back to its source page, and the repository includes the experiments and error analysis behind the reported scores.
+
+**Python · PyTorch · Hugging Face Transformers · LoRA · FastAPI · BM25**
+
+[Results](#measured-results) · [Run locally](#run-locally-macos-linux-windows) · [Architecture](#architecture) · [Model card](docs/MODEL_CARD.md)
+
+## At a glance
+
+| Task | Result | Evaluation |
+| :--- | :--- | :--- |
+| Financial sentiment | **92.7% macro-F1** with DistilBERT + LoRA, vs. 83.8% for TF-IDF + logistic regression | 452 held-out Financial PhraseBank sentences; near-duplicate templates grouped before splitting |
+| Report retrieval | **65.0% Recall@5** with BM25 across 8,778 indexed passages | 162 report-separated FinQA test questions |
+| Research interface | PDF search, page-level citations, sentiment inference and request logs | Runs locally; setup below |
+
+BM25 had the highest retrieval Recall@5 point estimate. The trained reranker's confidence interval overlaps it, so this test does not establish a reliable difference between the two methods. The sentiment result comes from a single training seed.
+
+<details>
+<summary><b>Evaluation details, uncertainty and audit figures</b></summary>
 
 ### What the evaluation actually establishes
 
@@ -22,9 +39,11 @@ This is a technically inspectable **research portfolio**, not a production banki
 
 See [statistical audit](reports/UNCERTAINTY.md), [extractive-answer audit](reports/EXTRACTIVE_EVALUATION.md), [numeric audit](reports/ARITHMETIC.md), [adversarial report](reports/REDTEAM.md), and [verification status](docs/VERIFICATION.md).
 
+</details>
+
 ## Run locally (macOS, Linux, Windows)
 
-> **Important:** `127.0.0.1` means **this computer**. It is not a public demo or a GitHub-hosted site. The URL works only while the FastAPI server is running on the same machine. **GitHub Actions does not deploy the application.**
+> Run the server on your own computer, then open **http://127.0.0.1:8765/** there. The application is local; GitHub hosts the source code and recorded results.
 
 ### macOS quick start (Apple Silicon / Intel)
 
@@ -215,5 +234,7 @@ Code guide: `corpus.py` parses sources; `retrieval.py` indexes and trains; `eval
 ## Data and attribution
 
 FinQA: Zhiyu Chen et al., *FinQA: A Dataset of Numerical Reasoning over Financial Data*, EMNLP 2021. [Paper](https://arxiv.org/abs/2109.00122) · [Repository](https://github.com/czyssrs/FinQA). The upstream MIT license is preserved at `data/FINQA_LICENSE`. Underlying report text originates from the respective issuers. Financial Document Research & Analysis is not affiliated with those issuers or FinQA.
+
+Development included AI coding assistance. This is a single-user research application; evaluation scope and operational limits are documented above.
 
 See [Independent reviewer guide](docs/REVIEWER_GUIDE.md), [GitHub publishing](docs/PUBLISHING.md), [Interview guide](docs/INTERVIEW_GUIDE.md), [CV wording](docs/CV.md), [Model card](docs/MODEL_CARD.md) and [verification](docs/VERIFICATION.md).
