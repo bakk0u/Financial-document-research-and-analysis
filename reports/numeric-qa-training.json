@@ -1,0 +1,57 @@
+{
+  "trained_at_unix": 1794583989,
+  "seed": 20261113,
+  "accounting": {
+    "upstream_train_rows": 6251,
+    "fit_rows": 4229,
+    "validation_rows": 246,
+    "dropped_for_blind_report_overlap": 1388,
+    "dropped_for_dev_holdout_overlap": 1109,
+    "fit_reports": 516
+  },
+  "templates": [
+    "add(N1,N2)",
+    "add(N1,N2), divide(#0,const_2)",
+    "add(N1,N2), divide(N1,#0)",
+    "add(N1,N2), divide(N2,#0)",
+    "divide(N1,N2)",
+    "divide(N1,N2), multiply(#0,const_100)",
+    "divide(N1,N2), subtract(#0,const_1)",
+    "divide(const_100,N1)",
+    "greater(N1,N2)",
+    "multiply(N1,N2)",
+    "multiply(N1,N2), divide(#0,const_1000000)",
+    "multiply(N1,const_1000), divide(#0,N2)",
+    "subtract(N1,N2)",
+    "subtract(N1,N2), divide(#0,N1)",
+    "subtract(N1,N2), divide(#0,N2)",
+    "subtract(N1,const_100)",
+    "subtract(N1,const_100), divide(#0,const_100)",
+    "subtract(N1,const_100), divide(#0,const_100), subtract(N2,const_100), divide(#2,const_100), subtract(#1,#3)"
+  ],
+  "template_coverage_of_fit_pool": 0.8014,
+  "unary_examples": 105095,
+  "pair_examples": 131363,
+  "threshold": 0.387,
+  "threshold_rule": "maximise (correct - wrong) on dev validation, both scopes pooled",
+  "validation": {
+    "page": {
+      "questions": 246,
+      "accuracy_without_abstention": 0.4065,
+      "answered": 107,
+      "correct": 76,
+      "answered_precision": 0.7103
+    },
+    "collection": {
+      "questions": 246,
+      "accuracy_without_abstention": 0.2317,
+      "answered": 65,
+      "correct": 42,
+      "answered_precision": 0.6462
+    }
+  },
+  "passages": 12,
+  "max_candidates": 12,
+  "note": "Validation numbers are development figures used for selection; they are not the blind result.",
+  "model_sha256": "9a9dd75aa7e5e467f247ba59e6efc8c9659ad74dd461545bd993aeb13dbad0b3"
+}

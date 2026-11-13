@@ -16,26 +16,6 @@ from financial_research.evaluate import metrics
 from financial_research.retrieval import Engine, METHODS, train_reranker
 
 
-@pytest.fixture(scope='session')
-def corpus():
-    return load_finqa()
-
-
-@pytest.fixture(scope='session')
-def engine(corpus):
-    c, _ = corpus
-    return Engine(c, json.loads((DATA / 'reranker.json').read_text()))
-
-
-@pytest.fixture(scope='session')
-def client(tmp_path_factory, engine, corpus):
-    from financial_research import app as module
-    module.state.update(engine=engine, queries=corpus[1], audit=Audit(tmp_path_factory.mktemp('runtime') / 'audit.db'))
-    module.RUNTIME = tmp_path_factory.mktemp('uploads')
-    # Avoid repeated startup indexing; initialize production dependencies explicitly.
-    return TestClient(module.app)
-
-
 def test_gold_evidence_resolves(corpus):
     chunks, queries = corpus
     ids = {c.id for c in chunks}

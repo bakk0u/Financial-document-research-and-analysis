@@ -79,6 +79,7 @@ def status():
             'fingerprint': engine.fingerprint, 'methods': METHODS,
             'model_trained': bool(engine.model), 'model': engine.model,
             'generation_configured': bool(os.environ.get('OPENAI_API_KEY') and os.environ.get('FINANCIAL_RESEARCH_MODEL')),
+            'numeric_ready': (DATA / 'numeric-qa-model.joblib').exists(),
             'sentiment_ready': (DATA / 'sentiment-adapter/adapter_config.json').exists(),
             'sentiment_base_cached': (ROOT / 'runtime/base-model/model.safetensors').exists(),
             'vector_backend': 'TF-IDF + 64-dimensional latent semantic analysis (LSA); not neural embeddings',
@@ -150,6 +151,71 @@ def calculate(request: ArithmeticRequest):
             'program_sha256':hashlib.sha256(request.program.encode()).hexdigest(),
             'cited_ids':[q['id'] for q in quotes], 'result_type':type(verified['value']).__name__})
         return verified
+
+
+class NumericQuery(BaseModel):
+    question: str = Field(min_length=3, max_length=1200)
+    document: str | None = None
+    proposer: str = 'learned'
+
+
+def numeric_model():
+    """Loaded once on first use; absent model file means the feature is unavailable, not an error."""
+    if 'numeric' not in state:
+        from .numeric_qa import MODEL_PATH, NumericQA
+        state['numeric'] = NumericQA.load() if MODEL_PATH.exists() else None
+    return state['numeric']
+
+
+@app.post('/api/numeric')
+def numeric(query: NumericQuery):
+    """Question -> retrieved evidence -> inferred calculation -> verified, cited number (or abstention).
+
+    Unlike /api/calculate, no formula is supplied: operands and the operation are inferred. The
+    result is asserted only when every operand is found in a cited passage and confidence clears
+    the frozen threshold. Measured accuracy: reports/blind/BLIND_RESULTS.md.
+    """
+    from .answer import ADVICE, suspicious_instruction
+    from .numeric_qa import PASSAGES
+    if query.proposer not in ('learned', 'llm'):
+        raise HTTPException(422, 'Unknown proposer')
+    if suspicious_instruction(query.question) or ADVICE.search(query.question):
+        return {'status': 'blocked', 'reason': 'This tool computes figures from reported filings. It does not follow embedded instructions or give investment advice.', 'evidence': []}
+    with lock:
+        engine = state['engine']
+        if query.document and query.document not in engine.doc_indices:
+            raise HTTPException(404, 'Unknown source document')
+        start = time.perf_counter()
+        hits = [h for h in engine.search(query.question, 'bm25', PASSAGES, query.document)
+                if not suspicious_instruction(h['text'])]
+    if query.proposer == 'llm':
+        from .llm_program import answer_with_llm
+        result = answer_with_llm(query.question, hits)
+    else:
+        model = numeric_model()
+        if model is None:
+            raise HTTPException(503, 'Numerical model not trained. Run python scripts/train_numeric_qa.py')
+        result = model.answer(query.question, hits)
+        result.setdefault('proposer', 'learned')
+    result['total_ms'] = round((time.perf_counter() - start) * 1000, 2)
+    result['audit_id'] = state['audit'].append({'action': 'numeric_answer',
+        'question_sha256': hashlib.sha256(query.question.encode()).hexdigest(), 'document': query.document,
+        'proposer': query.proposer, 'status': result['status'], 'program': result.get('program'),
+        'cited_ids': [c['id'] for c in result.get('citations', [])], 'index_fingerprint': engine.fingerprint})
+    result['evidence'] = [{k: h[k] for k in ('id', 'company', 'year', 'page', 'locator', 'kind', 'text', 'source')} for h in hits]
+    return result
+
+
+@app.get('/api/blind-evaluation')
+def blind_evaluation():
+    out = {}
+    for name in ('numeric-learned', 'numeric-llm', 'retrieval'):
+        path = ROOT / f'reports/blind/{name}.json'
+        if path.exists():
+            out[name] = json.loads(path.read_text())
+    if not out:
+        raise HTTPException(503, 'Blind benchmark not yet run')
+    return out
 
 
 @app.get('/api/uncertainty')

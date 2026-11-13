@@ -1,0 +1,35 @@
+{
+  "frozen_at_unix": 1794600946,
+  "files": {
+    "financial_research/numeric_qa.py": "15ffc3e73ce92415f3bc9334ac92a2746bf70a7339573df23c3b95491e420ec0",
+    "financial_research/llm_program.py": "ce377351a011e1fa73da198e36b27ed5e069887ac5bddb2b3c28d6fbbe1e6253",
+    "financial_research/arithmetic.py": "48911fe4a57260e2fe429e76464f2415a863017da38117033d433952ef500e25",
+    "financial_research/retrieval.py": "ad8c116f0d74ac6807b0075be51a099870559c36201da1b37ebbec4f9b55d100",
+    "financial_research/neural.py": "88c81ef41b97a0d1914d2fad91c102e7695d8b0cb2aadc0c8d9ef413340ca5c3",
+    "financial_research/blind.py": "a560d767df122c2d9e3f4120652e3d00d29e05ffce8642c77cd4401dec77d391",
+    "financial_research/corpus.py": "007c1adde97859d6df5d5810ba4a948803f6ad3545c3a287371ed9b8f04b290c",
+    "scripts/evaluate_blind.py": "ab3608b69c71165198f4a45d11cd2a3e930158017248e0046a9711021d0a2500",
+    "data/numeric-qa-model.joblib": "9a9dd75aa7e5e467f247ba59e6efc8c9659ad74dd461545bd993aeb13dbad0b3",
+    "data/blind/system_config.json": "479f650aa3ec442aa428708e920804973872578471d3a883e606a9ebcc9ed1ac",
+    "data/blind/finqa-blind-test.json": "6f121a3e2a9937d428fe4032129b6f932eac7daf47cdc7ff397331183ff3124d"
+  },
+  "config": {
+    "retrieval": {
+      "bi_encoder": "BAAI/bge-small-en-v1.5",
+      "bi_encoder_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+      "query_prefix": "Represent this sentence for searching relevant passages: ",
+      "cross_encoder": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+      "cross_encoder_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+      "rerank_depth": 50
+    },
+    "llm": {
+      "model": "gpt-5.5",
+      "concurrency": 6,
+      "selection": "gpt-5.4-mini, gpt-5.4 and gpt-5.5 were compared on 60 dev validation questions (page scope): 35, 39 and 45 correct. Chosen before the blind run."
+    },
+    "numeric": {
+      "retriever": "bm25",
+      "note": "passages and candidate limits are constants in financial_research/numeric_qa.py"
+    }
+  }
+}

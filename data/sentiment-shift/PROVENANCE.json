@@ -1,0 +1,33 @@
+{
+  "phrasebank_contested": {
+    "source": "https://huggingface.co/datasets/takala/financial_phrasebank/resolve/8d3fe0c36d5feec6b3cc5e455b0fcb4820fb9964/data/FinancialPhraseBank-v1.0.zip",
+    "zip_sha256": "0e1a06c4900fdae46091d031068601e3773ba067c7cecb5b0da1dcba5ce989a6",
+    "rule": "50%-agreement sentences absent from the all-agreement file; near-duplicates (char n-gram cosine >= 0.85) of training/validation sentences removed",
+    "candidates": 2576,
+    "kept": 2541,
+    "class_counts": {
+      "negative": 293,
+      "neutral": 1462,
+      "positive": 786
+    },
+    "license": "CC BY-NC-SA 3.0"
+  },
+  "twitter_financial_news": {
+    "repo": "zeroshot/twitter-financial-news-sentiment",
+    "revision": "ccbe24de388e287beb92dd393a335c376b350ac3",
+    "file": "sent_valid.csv",
+    "sha256": "31ea8274c98b52212daa68f2fb962811bf1913c1efe51b99765c8e2311806de6",
+    "license": "MIT",
+    "label_map": {
+      "0": "negative",
+      "1": "positive",
+      "2": "neutral"
+    },
+    "rows": 2388,
+    "class_counts": {
+      "negative": 347,
+      "neutral": 1566,
+      "positive": 475
+    }
+  }
+}

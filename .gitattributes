@@ -13,6 +13,7 @@
 *.npy binary
 *.npz binary
 *.pkl binary
+*.joblib binary
 *.sqlite3 binary
 
 # Upstream Financial PhraseBank sentences intentionally ship with CRLF bytes;
