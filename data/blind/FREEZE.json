@@ -1,0 +1,13 @@
+{
+  "name": "FinQA report-separated blind test",
+  "source_url": "https://raw.githubusercontent.com/czyssrs/FinQA/main/dataset/test.json",
+  "upstream_blob_sha": "59958c7c3bb3b21f4dff6bc912a0fe0ae710aee0",
+  "upstream_sha256": "831dbfb2e785dbc227f895ce3f24046433467aec67b09db2bd6ac7692a8a30dc",
+  "blind_sha256": "6f121a3e2a9937d428fe4032129b6f932eac7daf47cdc7ff397331183ff3124d",
+  "questions": 710,
+  "pages": 238,
+  "reports": 185,
+  "selection_rule": "official FinQA test.json rows whose company/report-year is absent from data/finqa-dev.json",
+  "development_exclusion": "any FinQA train.json row sharing a company/report-year with this set is excluded from development",
+  "frozen_before": "any end-to-end numerical QA code, neural-retrieval experiment or tuning existed in this repository"
+}
