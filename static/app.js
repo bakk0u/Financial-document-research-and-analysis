@@ -57,7 +57,7 @@ $('#export-answer').addEventListener('click',()=>lastAnswer&&download('research-
 async function loadEvaluation() {
  try{
   if(!evaluationData)evaluationData=await api('/api/evaluation');renderBenchmark();
-  const [u,a]=await Promise.all([api('/api/uncertainty'),api('/api/arithmetic-evaluation')]);
+  const [u,a,x]=await Promise.all([api('/api/uncertainty'),api('/api/arithmetic-evaluation'),api('/api/extractive-evaluation')]);
   const row=u.retrieval.find(x=>x.scope==='collection'&&x.metric==='recall_at_5'&&x.resampling_unit==='page'&&x.contrast==='reranked minus bm25');
   $('#uncertainty-findings').replaceChildren(
     node('p',`${row.queries} held-out questions across ${row.clusters} pages. Reranker vs BM25: ${(100*row.delta).toFixed(1)} percentage points [${(100*row.lower_95).toFixed(1)}, ${(100*row.upper_95).toFixed(1)}] 95% cluster-bootstrap interval.`),
@@ -66,6 +66,10 @@ async function loadEvaluation() {
   $('#arithmetic-findings').replaceChildren(
     node('p',`${a.supported_programs} / ${a.test_questions} oracle arithmetic programs supported. Literal operands covered by collection-wide BM25 top-5: ${a.collection_bm25_operand_coverage} / ${a.test_questions}.`),
     node('p','Uses benchmark-provided gold programs. This measures an arithmetic/grounding ceiling, NOT independent generated-answer accuracy.','muted'));
+  $('#extractive-findings').replaceChildren(
+    node('p',`${x.any_gold_selected}/${x.test_queries} questions (${(100*x.any_gold_selected/x.test_queries).toFixed(1)}%) had at least one gold passage in the selected exact excerpts. ${(x.any_gold_in_top5)} had a gold passage in the top five retrieved chunks.`),
+    node('p',`Page-cluster bootstrap 95% CI for selection: ${(100*x.any_gold_selected_page_cluster_ci_95[0]).toFixed(1)}%–${(100*x.any_gold_selected_page_cluster_ci_95[1]).toFixed(1)}% across ${x.source_pages} report pages.`,'muted'),
+    node('p','This is an audited evidence-selection rate, NOT independent financial numerical-answer accuracy or proof of semantic faithfulness.','muted'));
  }catch(e){error(e.message);}
 }
 function renderBenchmark() {if(!evaluationData)return;const split=$('#eval-split').value,scope=$('#eval-scope').value,rows=evaluationData.results.filter(r=>r.split===split&&r.scope===scope);$('#benchmark-table').replaceChildren();$('#benchmark-chart').replaceChildren();const title=node('div',undefined,'chart-title');title.append(node('h2','Evidence recall @ 5'),node('span',`${rows[0]?.queries||0} questions · ${scope==='page'?'known page':'collection-wide'}`));$('#benchmark-chart').append(title);for(const r of rows){const row=node('div',undefined,'chart-row'),track=node('div',undefined,'bar-track'),fill=node('div',undefined,'bar-fill');fill.style.width=`${Math.min(100,Math.max(0,r.recall_at_5*100))}%`;track.append(fill);row.append(node('span',labels[r.method]),track,node('strong',`${(r.recall_at_5*100).toFixed(1)}%`));$('#benchmark-chart').append(row);const tr=node('tr');[labels[r.method],...( ['recall_at_5','mrr_at_5','ndcg_at_5','all_evidence_at_5'].map(k=>(r[k]*100).toFixed(1)+'%')),r.latency_p50_ms.toFixed(1)+' ms'].forEach(v=>tr.append(node('td',v)));$('#benchmark-table').append(tr);}$('#eval-limitations').replaceChildren(...evaluationData.limitations.map(l=>node('li',l)));}

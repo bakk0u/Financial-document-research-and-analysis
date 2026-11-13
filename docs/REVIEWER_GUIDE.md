@@ -8,7 +8,10 @@ python -m pytest -q
 python scripts/redteam.py
 python scripts/evaluate_uncertainty.py
 python scripts/evaluate_arithmetic.py
+python scripts/evaluate_extractive.py
 ```
+
+Inspect the 162-question extractive evidence-selection metrics from the Evaluation panel or `reports/EXTRACTIVE_EVALUATION.md`. **Gold citation selection does not establish numerical answer correctness.**
 
 Compare the outputs against the committed JSON and Markdown files in `reports/`; inspect `MANIFEST.json` for content hashes. Optional `python scripts/ablate_reranker.py` retrains six variations of the seven-feature classifier on the frozen original training pairs and reports **validation only**.
 

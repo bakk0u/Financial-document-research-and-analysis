@@ -1,3 +1,11 @@
+## Unreleased verification improvements (13 November 2026)
+
+- Force LF checkouts on Windows for reproducible SHA-256 integrity checks (`.gitattributes`).
+- Benchmark the real BM25-to-extractive-quotation pipeline on the frozen 162-question FinQA split; report gold-source selection rates, page-cluster intervals, and failure cases without claiming numerical answer accuracy.
+- Run the extractive audit in Linux CI with output-drift checks, and run the Docker smoke job independently of the cross-platform Python matrix.
+- Surface extractive evaluation results in the FastAPI API and Evaluation tab.
+- Document actual previous GitHub Actions failure and the exact limitations of extractive text-selection scores.
+
 # Changelog
 
 ## 1.1.0 — 2026-11-12

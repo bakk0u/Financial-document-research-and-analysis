@@ -37,17 +37,19 @@ jobs:
       - name: FinQA numerical oracle diagnostic
         if: matrix.os == 'ubuntu-latest'
         run: python scripts/evaluate_arithmetic.py
+      - name: Extractive answer selection audit (no oracle programs)
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/evaluate_extractive.py
       - name: Validation-only reranker feature ablations
         if: matrix.os == 'ubuntu-latest'
         run: python scripts/ablate_reranker.py
       - name: Detect benchmark output drift
         if: matrix.os == 'ubuntu-latest'
-        run: git diff --exit-code -- reports/UNCERTAINTY.md reports/uncertainty.json reports/ARITHMETIC.md reports/arithmetic-evaluation.json reports/REDTEAM.md reports/redteam.json reports/ABLATION.md reports/ablation.json
+        run: git diff --exit-code -- reports/UNCERTAINTY.md reports/uncertainty.json reports/ARITHMETIC.md reports/arithmetic-evaluation.json reports/REDTEAM.md reports/redteam.json reports/ABLATION.md reports/ablation.json reports/EXTRACTIVE_EVALUATION.md reports/extractive-evaluation.json
   docker:
     name: Docker local-only smoke / Linux
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: python
     steps:
       - uses: actions/checkout@v4
       - name: Build container

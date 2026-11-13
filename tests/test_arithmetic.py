@@ -99,5 +99,9 @@ def test_new_endpoints_and_remote_citation_boundary(tmp_path, monkeypatch):
         assert false_quote.status_code==422
         assert client.get('/api/uncertainty').json()['sentiment']['test_sentences']==452
         assert client.get('/api/arithmetic-evaluation').json()['test_questions']==162
+        extractive = client.get('/api/extractive-evaluation')
+        assert extractive.status_code == 200
+        assert extractive.json()['test_queries'] == 162
+        assert extractive.json()['any_gold_selected'] == 119
     finally:
         service.state.clear();service.state.update(real_state)

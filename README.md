@@ -10,6 +10,7 @@ This is a technically inspectable **research portfolio**, not a production banki
 - **Retrieval:** on 162 report-separated FinQA test questions from 50 pages, BM25 achieved **64.97% Recall@5** collection-wide. Reranked retrieval achieved **62.55%**; its paired *page-cluster* bootstrap difference versus BM25 is **−2.4 percentage points**, 95% CI **[−8.8, +4.2]**. That interval crosses zero: **no clear winner between these two**. The seven-feature reranker is not a neural cross-encoder, and the vector baseline is LSA, not neural embeddings.
 - **Numerical audit:** a safe bounded arithmetic interpreter handles **155/162** held-out FinQA gold programs. In collection-wide BM25 top-5 retrieval, all literal gold-program operands are visible in **89/162** cases. **This uses oracle programs supplied by FinQA and is not independent answer accuracy**; the limitation is the main research finding. See [numeric grounding report](reports/ARITHMETIC.md).
 - **Security boundary:** prompt screening now passes the **13 known screening probes** (formerly 10); two forged-source tests are rejected. This is a small regression suite, *not* a claim of general attack resistance. Optional generated responses can output exact cited excerpts only; unsupported paraphrases are rejected.
+- **Extractive answer audit:** the actual BM25→evidence-excerpt pipeline selected at least one gold passage for **119/162 (73.5%)** questions, with a question-weighted **page-cluster 95% CI of 65.0%–81.4%**. Retrieval found one in **126/162 (77.8%)**. This is **citation selection**, not numerical answer accuracy, not semantic faithfulness, and not evaluation of free-text LLM generation. See [extractive audit](reports/EXTRACTIVE_EVALUATION.md).
 
 ![Frozen FinQA collection-wide retrieval Recall at 5](assets/retrieval-recall.png)
 
@@ -19,7 +20,7 @@ This is a technically inspectable **research portfolio**, not a production banki
 
 **All figures come from frozen measured artifacts.** Arithmetic uses benchmark-supplied oracle programs and is not an end-to-end answer score. `python scripts/make_figures.py` regenerates the images if matplotlib is installed.
 
-See [statistical audit](reports/UNCERTAINTY.md), [numeric audit](reports/ARITHMETIC.md), [adversarial report](reports/REDTEAM.md), and [verification status](docs/VERIFICATION.md).
+See [statistical audit](reports/UNCERTAINTY.md), [extractive-answer audit](reports/EXTRACTIVE_EVALUATION.md), [numeric audit](reports/ARITHMETIC.md), [adversarial report](reports/REDTEAM.md), and [verification status](docs/VERIFICATION.md).
 
 ## Run locally (macOS, Linux, Windows)
 
@@ -91,7 +92,7 @@ To stop the server, press **Ctrl+C** in the Terminal window that launched it. To
 - Upload selectable-text PDFs, preserve physical page references and persist them across restarts.
 - View measured benchmark results, source inventory and a local hash-chained audit trail.
 - Verify operator-specified financial arithmetic using a bounded DSL with source-grounded numeric operands, cited quotes, an operation trace and an audit event.
-- Inspect paired, document-clustered bootstrap intervals and an offline FinQA gold-program arithmetic audit.
+- Inspect paired, document-clustered bootstrap intervals, the real extractive citation-selection audit, and an offline FinQA gold-program arithmetic audit.
 - Export investigations, evaluation results and audit records as JSON.
 
 ## Measured results

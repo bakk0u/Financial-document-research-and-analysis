@@ -159,6 +159,15 @@ def uncertainty():
     return json.loads(path.read_text())
 
 
+@app.get('/api/extractive-evaluation')
+def extractive_evaluation():
+    """Summary of tested question-to-quotation coverage, not numerical QA accuracy."""
+    path = ROOT / 'reports/extractive-evaluation.json'
+    if not path.exists():
+        raise HTTPException(503, 'Run python scripts/evaluate_extractive.py to produce the audit')
+    return json.loads(path.read_text())['summary']
+
+
 @app.get('/api/arithmetic-evaluation')
 def arithmetic_evaluation():
     path=ROOT / 'reports/arithmetic-evaluation.json'

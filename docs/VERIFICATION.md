@@ -47,6 +47,22 @@ On 12 November 2026, this editing workspace ran **Python 3.13** with NumPy 2.3.5
 - PDF parsing is not sandboxed. No authentication, multi-tenant controls, PII guarantees, tool execution or investment advice is provided.
 - Docker, a live deployed backend, remote GitHub CI, Safari/Firefox and independent operating-system execution are not verified unless later testing documents specific artifacts or logs.
 
+## Additional extractive answer evaluation — 13 November 2026
+
+`python scripts/evaluate_extractive.py` executes the real BM25 retrieval engine and local extractive selector on all **162 previously inspected report-separated test questions**. Gold passage labels are not passed to retrieval or synthesis. It reports:
+
+- 126/162 questions have at least one gold passage in top-five retrieved evidence.
+- 119/162 questions have at least one gold passage among the excerpts selected for the response.
+- 36/162 have no gold passage retrieved; 7/162 retrieve gold but fail to select it.
+- Page-cluster percentile 95% CI for selected any-gold rate: 0.650–0.814, from 50 source-page clusters; still not a generalization guarantee.
+- 162/162 outputs meet exact-quotation checks (textual equality is not semantic entailment). No model-generated answer quality or independent numerical correctness is claimed.
+
+See `reports/EXTRACTIVE_EVALUATION.md` and JSON examples. Model-selection experiments must not use this inspected test set. The same summary is also exposed by the local `/api/extractive-evaluation` endpoint and displayed in the Evaluation tab; an API test verifies its numbers, but a full real-browser audit remains blocked in the current environment.
+
+### Observed remote GitHub Actions status before the next patch
+
+GitHub Actions run `43356815962` on commit `d5a9541` passed Python 3.12 on Linux and macOS, but failed Windows at raw-byte manifest verification because Git's default Windows checkout changed source LF bytes to CRLF; Docker was skipped due to the matrix dependency. A follow-up adds `.gitattributes` to enforce LF and decouples the Docker smoke workflow from matrix completion. **A passing new Actions run is not assumed until verified remotely.**
+
 ## Legacy 1.0 observations
 
 The original archive contained `reports/tests.log`, `reports/clean-tests.log`, and model-training logs. These were generated before revision 1.1 and must not be represented as validation of newly modified code.

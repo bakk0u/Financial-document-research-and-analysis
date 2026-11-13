@@ -1,0 +1,20 @@
+# Preserve exact source/report bytes across Windows, macOS and Linux.
+# This project stores text snapshots and verifies them with SHA-256.
+* text=auto eol=lf
+
+# Explicitly keep non-text artifacts binary.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.zip binary
+*.safetensors binary
+*.bin binary
+*.npy binary
+*.npz binary
+*.pkl binary
+*.sqlite3 binary
+
+# Upstream Financial PhraseBank sentences intentionally ship with CRLF bytes;
+# their original upstream SHA-256 must remain unchanged.
+data/phrasebank-allagree.txt -text
