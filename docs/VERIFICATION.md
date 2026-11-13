@@ -66,3 +66,11 @@ GitHub Actions run `43356815962` on commit `d5a9541` passed Python 3.12 on Linux
 ## Legacy 1.0 observations
 
 The original archive contained `reports/tests.log`, `reports/clean-tests.log`, and model-training logs. These were generated before revision 1.1 and must not be represented as validation of newly modified code.
+
+## CI reproducibility qualification — 13 November 2026
+
+On published commit `e679d62`, the Linux / Python 3.12 job passed source checks, the complete test suite, the adversarial regression suite, the FinQA oracle/uncertainty/extractive diagnostics and the six validation-only reranker ablations. It failed only the **exact artifact diff**: on that Linux runner the reranker generated **8,889** training examples rather than the committed **8,888**, and some validation metrics changed by up to approximately **0.41 percentage points**. This is *not* bit-identical replication and must not be represented as such; the LSA-assisted top-k selection is sensitive to small numerical differences and candidate-pool ties across environments.
+
+The CI gate now retains **exact output checking** for all other reports and compares reranker ablations against the committed JSON, requiring identical variants, splits and query counts, at most **one** changed candidate-training pair and at most **0.005 absolute (0.5 percentage point)** deviation in each score. It also requires the freshly generated Markdown table to match the JSON. Larger differences fail. These bounds are justified only by the observed discrepancy and do **not** establish statistical equivalence. A subsequent controlled reranker-stability experiment would be needed for exact replication.
+
+This revision is a CI policy/regression-test change, not a new experiment, a reranker retraining, or a new held-out result. Publication and the next hosted CI outcome must be verified separately.

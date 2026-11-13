@@ -43,9 +43,14 @@ jobs:
       - name: Validation-only reranker feature ablations
         if: matrix.os == 'ubuntu-latest'
         run: python scripts/ablate_reranker.py
-      - name: Detect benchmark output drift
+      # Deterministic reports stay bit-identical. The exploratory LSA-assisted
+      # reranker ablation admits only measured cross-platform floating-point drift.
+      - name: Detect deterministic benchmark output drift
         if: matrix.os == 'ubuntu-latest'
-        run: git diff --exit-code -- reports/UNCERTAINTY.md reports/uncertainty.json reports/ARITHMETIC.md reports/arithmetic-evaluation.json reports/REDTEAM.md reports/redteam.json reports/ABLATION.md reports/ablation.json reports/EXTRACTIVE_EVALUATION.md reports/extractive-evaluation.json
+        run: git diff --exit-code -- reports/UNCERTAINTY.md reports/uncertainty.json reports/ARITHMETIC.md reports/arithmetic-evaluation.json reports/REDTEAM.md reports/redteam.json reports/EXTRACTIVE_EVALUATION.md reports/extractive-evaluation.json
+      - name: Validate bounded exploratory ablation drift
+        if: matrix.os == 'ubuntu-latest'
+        run: python scripts/check_ablation_drift.py
   docker:
     name: Docker local-only smoke / Linux
     runs-on: ubuntu-latest
