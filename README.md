@@ -21,22 +21,66 @@ This is a technically inspectable **research portfolio**, not a production banki
 
 See [statistical audit](reports/UNCERTAINTY.md), [numeric audit](reports/ARITHMETIC.md), [adversarial report](reports/REDTEAM.md), and [verification status](docs/VERIFICATION.md).
 
-## Run
+## Run locally (macOS, Linux, Windows)
 
-Python 3.12 is the verified interpreter. Python 3.11–3.13 is supported by the source but not separately verified. From the extracted `financial-document-analysis` directory:
+> **Important:** `127.0.0.1` means **this computer**. It is not a public demo or a GitHub-hosted site. The URL works only while the FastAPI server is running on the same machine. **GitHub Actions does not deploy the application.**
+
+### macOS quick start (Apple Silicon / Intel)
+
+Open Terminal on your Mac, in the folder that contains this project's `README.md` and `run.py` (after cloning or extracting the ZIP):
 
 ```bash
-python -m venv .venv
-# macOS / Linux
+cd ~/Downloads/financial-document-analysis  # change this if you cloned it elsewhere
+pwd
+ls README.md run.py
+python3 --version
+```
+
+**Python 3.11–3.13 is required; Python 3.12 is the environment used for the original release.** If your `python3 --version` is outside that range, install Python 3.12 (e.g. `brew install python@3.12`) and substitute `python3.12` for `python3` in the next command.
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate
-# Windows PowerShell instead: .venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 python -m pip install -r requirements.lock.txt
 python run.py
 ```
 
-Open **http://127.0.0.1:8765**. The report-data snapshot, trained reranker, trained sentiment adapters and measured results are included. Retrieval and the lexical sentiment baseline work offline. Transformer sentiment downloads the pinned public DistilBERT base weights on first use (about 268 MB), then runs offline. No API key is needed for either. Index startup normally takes a few seconds; wait for “Application startup complete.”
+Installations download Python packages and may take a while on the first run. **Leave this Terminal window running.** Wait for the output that contains `Uvicorn running on http://127.0.0.1:8765` and `Application startup complete`, then open **`http://127.0.0.1:8765/` in a browser on that same Mac**. You should see the research dashboard. No API key is needed for local retrieval.
+
+The report-data snapshot, trained reranker, trained sentiment adapters and measured results are included. Retrieval and lexical sentiment work offline after installation. Transformer sentiment downloads the pinned public DistilBERT base weights on first use (about 268 MB) and then runs offline.
+
+### Other platforms
+
+Run from the repository root, in a Python 3.11–3.13 environment:
+
+```bash
+python -m venv .venv
+# Linux: source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements.lock.txt
+python run.py
+```
 
 For a lighter dependency install using supported version ranges: `python -m pip install -e '.[test]'`.
+
+### Troubleshooting: browser says “site can't be reached”
+
+1. **Start the app first.** Opening `127.0.0.1:8765` from the GitHub README without running `python run.py` on your Mac cannot work. The Terminal running the server must remain open. The GitHub repository is source code, not a deployed web service.
+2. **Confirm you're in the project, not Downloads itself:** `pwd` should end with `financial-document-analysis`, and `ls README.md run.py` should succeed. If you cloned the GitHub repo, use its actual folder instead.
+3. **Look for startup errors.** If you see `ModuleNotFoundError` or `No module named uvicorn`, activate `.venv` and rerun `python -m pip install -r requirements.lock.txt`. If installation fails, resolve that error before opening the URL. If the index is initializing, wait for `Application startup complete`.
+4. **Check the local server from a second Terminal tab:**
+
+   ```bash
+   curl -I http://127.0.0.1:8765/
+   ```
+
+   `HTTP/1.1 200 OK` means the web UI is responding; `Failed to connect` means no server is listening there. Do not use a remote browser, phone, or GitHub preview to test a service bound to your Mac's loopback address.
+5. **Port already in use?** Run `lsof -nP -iTCP:8765 -sTCP:LISTEN` to inspect which process owns the port. Or launch this project on another port using `python scripts/serve.py --port 8766` and visit `http://127.0.0.1:8766/`.
+
+To stop the server, press **Ctrl+C** in the Terminal window that launched it. To start it again later, run `cd ~/Downloads/financial-document-analysis && source .venv/bin/activate && python run.py` (adjust the folder if you cloned the repository).
+
+**For reviewers:** this local-only dashboard is not deployed. Run the commands above to inspect the working interface, or use the committed figures, evaluations and source code without starting the app. Do not present `127.0.0.1` as a publicly accessible live demo.
 
 ## What works
 
