@@ -78,7 +78,7 @@ class Engine:
                 len(nums & d) / max(1, len(nums)), float(self.chunks[idx].kind == 'table'),
                 len(bigrams & db) / max(1, len(bigrams)), len(q & d) / max(1, len(d))]
 
-    def search(self, query: str, method='reranked', k=5, document: str | None = None):
+    def search(self, query: str, method='bm25', k=5, document: str | None = None):
         if method not in METHODS:
             raise ValueError('Unknown retrieval method')
         bm, vec = self.scores(query)

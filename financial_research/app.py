@@ -8,7 +8,7 @@ from collections import OrderedDict
 from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field
@@ -51,8 +51,7 @@ async def local_boundary(request: Request, call_next):
     origin = request.headers.get('origin')
     host = request.headers.get('host', '')
     if origin and origin not in (f'http://{host}', f'https://{host}'):
-        raise_response = __import__('fastapi.responses', fromlist=['JSONResponse']).JSONResponse
-        return raise_response({'detail': 'Cross-origin requests are not allowed'}, status_code=403)
+        return JSONResponse({'detail': 'Cross-origin requests are not allowed'}, status_code=403)
     response = await call_next(request)
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['Referrer-Policy'] = 'no-referrer'
@@ -62,7 +61,7 @@ async def local_boundary(request: Request, call_next):
 
 class Query(BaseModel):
     question: str = Field(min_length=3, max_length=1200)
-    method: str = 'reranked'
+    method: str = 'bm25'
     document: str | None = None
     k: int = Field(default=5, ge=1, le=10)
     generate: bool = False

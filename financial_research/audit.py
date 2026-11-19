@@ -4,6 +4,7 @@ import json
 import sqlite3
 import threading
 import uuid
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,11 +30,24 @@ class Audit:
         return event['id']
 
     def read(self, limit=100):
+        if limit < 0:
+            raise ValueError('Audit limit must be nonnegative')
+        recent = deque(maxlen=limit)
+        previous = '0' * 64
+        valid = True
+        total = 0
         with sqlite3.connect(self.path) as db:
-            rows = db.execute('SELECT payload, previous_hash, hash FROM events ORDER BY seq').fetchall()
-        previous, valid = '0' * 64, True
-        for payload, prev, digest in rows:
-            valid &= prev == previous and hashlib.sha256((prev + payload).encode()).hexdigest() == digest
-            previous = digest
-        return {'chain_valid': bool(valid), 'events': [{**json.loads(p), 'hash': h} for p, _, h in rows[-limit:]][::-1],
-                'total': len(rows), 'notice': 'Local hash chain detects modification relative to its retained history. It cannot prevent deletion or rewriting by the database owner.'}
+            for payload, parent, digest in db.execute(
+                'SELECT payload, previous_hash, hash FROM events ORDER BY seq'
+            ):
+                expected = hashlib.sha256((parent + payload).encode()).hexdigest()
+                valid = valid and parent == previous and digest == expected
+                previous = digest
+                total += 1
+                recent.append((payload, digest))
+        return {
+            'chain_valid': valid,
+            'events': [{**json.loads(payload), 'hash': digest} for payload, digest in reversed(recent)],
+            'total': total,
+            'notice': 'Local hash chain detects modification relative to its retained history. It cannot prevent deletion or rewriting by the database owner.',
+        }
