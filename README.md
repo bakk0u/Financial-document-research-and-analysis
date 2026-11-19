@@ -2,7 +2,7 @@
 
 Search financial reports, inspect the source passages and analyse sentiment in a local Python application.
 
-The project brings together document retrieval, a fine-tuned sentiment classifier and a FastAPI interface. Each search result links back to its source page, and the repository includes the experiments and error analysis behind the reported scores.
+Search starts with BM25. Each result identifies a passage you can inspect alongside the answer. The same interface lets you compare lexical, vector, hybrid and reranked search. A separate sentiment tab classifies financial sentences.
 
 **Python · PyTorch · Hugging Face Transformers · LoRA · FastAPI · BM25**
 

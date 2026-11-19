@@ -265,3 +265,16 @@ def test_sentiment_api_baseline_and_audit(client):
 @pytest.mark.parametrize('payload', [ {'texts':[]}, {'texts':['x']}, {'texts':['Revenue increased.'],'model':'unknown'} ])
 def test_sentiment_api_validation(client,payload):
     assert client.post('/api/sentiment',json=payload).status_code==422
+
+
+def test_audit_checks_history_outside_display_window(tmp_path):
+    audit = Audit(tmp_path / 'audit.sqlite')
+    for index in range(4):
+        audit.append({'index': index})
+    assert [row['index'] for row in audit.read(2)['events']] == [3, 2]
+    assert audit.read(0)['events'] == []
+    with sqlite3.connect(audit.path) as db:
+        db.execute("UPDATE events SET payload = '{}' WHERE seq = 1")
+    result = audit.read(1)
+    assert result['total'] == 4
+    assert result['chain_valid'] is False
